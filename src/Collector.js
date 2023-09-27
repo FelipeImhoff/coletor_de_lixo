@@ -88,6 +88,20 @@ class Collector {
       } else if (matrix[this.pos_y - 1][this.pos_x] === '  ' && JSON.stringify({ x: this.pos_x, y: this.pos_y - 1 }) !== JSON.stringify(this.memory)) {
         this.memory = position
         return this.moveUp(matrix)
+      } else {
+        if (matrix[this.pos_y][this.pos_x - 1] === '  ') {
+          this.memory = position
+          return this.moveLeft(matrix)
+        } else if (matrix[this.pos_y - 1][this.pos_x] === '  ') {
+          this.memory = position
+          return this.moveUp(matrix)
+        } else if (matrix[this.pos_y][this.pos_x + 1] === '  ') {
+          this.memory = position
+          return this.moveRight(matrix)
+        } else if (matrix[this.pos_y + 1][this.pos_x] === '  ') {
+          this.memory = position
+          return this.moveDown(matrix)
+        }
       }
     }
     return matrix
