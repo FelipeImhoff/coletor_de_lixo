@@ -9,13 +9,10 @@ class Collector {
     this.pos_y = pos_y
     this.dist_x = this.calcDist(this.pos_x, garbageArr[garbageArr.length - 1].pos_x)
     this.dist_y = this.calcDist(this.pos_y, garbageArr[garbageArr.length - 1].pos_y)
-    this.memory = [
-      {
-        x: pos_x,
-        y: pos_y,
-      },
-    ]
-    this.blocked = false
+    this.memory = {
+      x: pos_x,
+      y: pos_y,
+    }
   }
 
   status() {
@@ -61,94 +58,38 @@ class Collector {
     return matrix
   }
 
-  alredyVisited(x, y) {
-    let found = false
-    this.memory.forEach((pos) => {
-      if (pos.x === x && pos.y === y) {
-        found = true
-        return found
-      }
-    })
-    return found
-  }
-
-  goToGarbage(matrix) {
+  makeMovement(matrix) {
     const position = {
       x: this.pos_x,
       y: this.pos_y,
     }
-    if (this.dist_x > 0 && matrix[this.pos_y][this.pos_x + 1] === '  ' && !this.alredyVisited(position.x + 1, position.y)) {
-      this.memory.push(position)
+    if (this.dist_x > 0 && matrix[this.pos_y][this.pos_x + 1] === '  ' && JSON.stringify({ x: this.pos_x + 1, y: this.pos_y }) !== JSON.stringify(this.memory)) {
+      this.memory = position
       return this.moveRight(matrix)
-    } else if (this.dist_y > 0 && matrix[this.pos_y + 1][this.pos_x] === '  ' && !this.alredyVisited(position.x, position.y + 1)) {
-      this.memory.push(position)
+    } else if (this.dist_y > 0 && matrix[this.pos_y + 1][this.pos_x] === '  ' && JSON.stringify({ x: this.pos_x, y: this.pos_y + 1 }) !== JSON.stringify(this.memory)) {
+      this.memory = position
       return this.moveDown(matrix)
-    } else if (this.dist_x < 0 && matrix[this.pos_y][this.pos_x - 1] === '  ' && !this.alredyVisited(position.x - 1, position.y)) {
-      this.memory.push(position)
+    } else if (this.dist_x < 0 && matrix[this.pos_y][this.pos_x - 1] === '  ' && JSON.stringify({ x: this.pos_x - 1, y: this.pos_y }) !== JSON.stringify(this.memory)) {
+      this.memory = position
       return this.moveLeft(matrix)
-    } else if (this.dist_y < 0 && matrix[this.pos_y - 1][this.pos_x] === '  ' && !this.alredyVisited(position.x, position.y - 1)) {
-      this.memory.push(position)
+    } else if (this.dist_y < 0 && matrix[this.pos_y - 1][this.pos_x] === '  ' && JSON.stringify({ x: this.pos_x, y: this.pos_y - 1 }) !== JSON.stringify(this.memory)) {
+      this.memory = position
       return this.moveUp(matrix)
     } else {
-      if (matrix[this.pos_y][this.pos_x + 1] === '  ' && !this.alredyVisited(position.x + 1, position.y)) {
-        this.memory.push(position)
+      if (matrix[this.pos_y][this.pos_x + 1] === '  ' && JSON.stringify({ x: this.pos_x + 1, y: this.pos_y }) !== JSON.stringify(this.memory)) {
+        this.memory = position
         return this.moveRight(matrix)
-      } else if (matrix[this.pos_y + 1][this.pos_x] === '  ' && !this.alredyVisited(position.x, position.y + 1)) {
-        this.memory.push(position)
+      } else if (matrix[this.pos_y + 1][this.pos_x] === '  ' && JSON.stringify({ x: this.pos_x, y: this.pos_y + 1 }) !== JSON.stringify(this.memory)) {
+        this.memory = position
         return this.moveDown(matrix)
-      } else if (matrix[this.pos_y][this.pos_x - 1] === '  ' && !this.alredyVisited(position.x - 1, position.y)) {
-        this.memory.push(position)
+      } else if (matrix[this.pos_y][this.pos_x - 1] === '  ' && JSON.stringify({ x: this.pos_x - 1, y: this.pos_y }) !== JSON.stringify(this.memory)) {
+        this.memory = position
         return this.moveLeft(matrix)
-      } else if (matrix[this.pos_y - 1][this.pos_x] === '  ' && !this.alredyVisited(position.x, position.y - 1)) {
-        this.memory.push(position)
+      } else if (matrix[this.pos_y - 1][this.pos_x] === '  ' && JSON.stringify({ x: this.pos_x, y: this.pos_y - 1 }) !== JSON.stringify(this.memory)) {
+        this.memory = position
         return this.moveUp(matrix)
       }
     }
-    if (this.blocked) {
-      this.blocked = false
-      this.memory = []
-    }
-    this.blocked = true
-    return matrix
-  }
-
-  goToTrashCan(matrix) {
-    const position = {
-      x: this.pos_x,
-      y: this.pos_y,
-    }
-    if (this.dist_x > 0 && matrix[this.pos_y][this.pos_x + 1] === '  ' && !this.alredyVisited(position.x + 1, position.y)) {
-      this.memory.push(position)
-      return this.moveRight(matrix)
-    } else if (this.dist_y > 0 && matrix[this.pos_y + 1][this.pos_x] === '  ' && !this.alredyVisited(position.x, position.y + 1)) {
-      this.memory.push(position)
-      return this.moveDown(matrix)
-    } else if (this.dist_x < 0 && matrix[this.pos_y][this.pos_x - 1] === '  ' && !this.alredyVisited(position.x - 1, position.y)) {
-      this.memory.push(position)
-      return this.moveLeft(matrix)
-    } else if (this.dist_y < 0 && matrix[this.pos_y - 1][this.pos_x] === '  ' && !this.alredyVisited(position.x, position.y - 1)) {
-      this.memory.push(position)
-      return this.moveUp(matrix)
-    } else {
-      if (matrix[this.pos_y][this.pos_x + 1] === '  ' && !this.alredyVisited(position.x + 1, position.y)) {
-        this.memory.push(position)
-        return this.moveRight(matrix)
-      } else if (matrix[this.pos_y + 1][this.pos_x] === '  ' && !this.alredyVisited(position.x, position.y + 1)) {
-        this.memory.push(position)
-        return this.moveDown(matrix)
-      } else if (matrix[this.pos_y][this.pos_x - 1] === '  ' && !this.alredyVisited(position.x - 1, position.y)) {
-        this.memory.push(position)
-        return this.moveLeft(matrix)
-      } else if (matrix[this.pos_y - 1][this.pos_x] === '  ' && !this.alredyVisited(position.x, position.y - 1)) {
-        this.memory.push(position)
-        return this.moveUp(matrix)
-      }
-    }
-    if (this.blocked) {
-      this.blocked = false
-      this.memory = []
-    }
-    this.blocked = true
     return matrix
   }
 
@@ -197,7 +138,7 @@ class Collector {
     if (this.canAct()) {
       return this.makeAction(matrix)
     }
-    return this.carrying ? this.goToTrashCan(matrix) : this.goToGarbage(matrix)
+    return this.makeMovement(matrix)
   }
 }
 module.exports = Collector
